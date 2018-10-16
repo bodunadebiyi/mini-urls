@@ -1,0 +1,15 @@
+<div class="subcription-info text-center">
+    <form class="subscribe_form" method="post" action="{% url 'shorten_url' %}">
+        {% csrf_token %}
+        <input type="text" class="email" name="original_url"  placeholder="Enter Url..." required>
+        <input class="subscribe" value="Shorten Url!" type="submit">
+    </form>
+
+    {% if messages %}
+        {% for msg in messages %}
+            {% if msg.level == 50 %}
+                <div class="my-toast-success padding-around">{{ msg.message | safe }}</div>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+</div>

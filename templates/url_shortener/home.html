@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% load url_shortener_tags %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-12">
+            <div className="text-center">
+                {% include 'url_shortener/partials/shortener_form.html' %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+    {% if messages %}
+        {% for msg in messages %} 
+            {% if msg.level_tag == 'error' %}   
+            <script type="text/javascript">
+                try {
+                    $(document).ready(function() {
+                        Toastify({
+                            text: "{{msg.message | safe}}",
+                            duration: 9000,
+                            close: true,
+                            positionLeft: true,
+                            className: "my-toast-{{msg.level_tag | error_pipe}} text-dark",
+                        }).showToast();
+                    });
+                } catch (e) {
+                    console.log('Error Loading Toastify::', e);
+                }
+            </script>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+{% endblock %}   
