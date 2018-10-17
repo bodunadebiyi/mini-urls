@@ -3,24 +3,24 @@
 
 {% block child_title %} Login {% endblock %}
 {% block content %}
-    <form action="" method="post">
+    <form method="post">
         {% csrf_token %}
-        <p>Please Enter your login details</p>
+        <p>Please Enter your sign up details</p>
         {% for field in form %}
         <div class="form-group">
             <div class="input-group">
                 <span class="input-group-addon">
                     <i class="fa {{ field.html_name | form_icon }}"></i>
                 </span>
-                <input class="form-control" id="{{ field.id_for_label }}" maxlength="30" name="{{ field.html_name }}" type="{{ field.html_name | form_type }}" placeholder="{{ field.html_name}}"/> 
+                <input class="form-control" id="{{ field.id_for_label }}" maxlength="30" name="{{ field.html_name }}" type="{{ field.html_name | form_type }}" placeholder="{{ field.html_name | form_placeholder}}"/> 
             </div>
             {{ field.errors }}
         </div>
         {% endfor %}
-        <button type="submit" class="btn btn-default btn-block">Login</button>
+        <button type="submit" class="btn btn-default btn-block">Signup</button>
     </form>
     {% if form.errors %}
         <p class="text-center text-danger margin-top">Your username and password does not match!</p>
     {% endif %}
-    <div class="text-center form-footer">Don't have an account? <a href="{% url 'register' %}">Sign up here</a>.</div>
+    <div class="text-center form-footer">Already have an account? <a href="{% url 'login' %}">Log in here</a>.</div>
 {% endblock %}

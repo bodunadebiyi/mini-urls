@@ -4,6 +4,8 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.models import User
+from django.contrib.auth import login, authenticate
+from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 from .models import Urls
 
@@ -40,6 +42,23 @@ def shorten_url(request):
                 messages.add_message(request, 50, success_message)
 
             return redirect('home')
+
+def register(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password1')
+
+            user = authenticate(username, password)
+            login(request, user)
+
+            return redirect('dashboard')
+    else:
+        form = UserCreationForm()
+
+    return render(request, 'url_shortener/register.html', { 'form': form })
 
 @login_required(login_url='login')       
 def goto_dashboard(request):

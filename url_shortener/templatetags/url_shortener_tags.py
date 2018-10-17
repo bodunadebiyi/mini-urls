@@ -12,3 +12,12 @@ def form_icon(value):
 @register.filter(name='form_type')
 def form_type(value):
     return 'text' if value == 'username' else 'password'
+
+@register.filter(name='form_placeholder')
+def form_placeholder(value):
+    if value == 'password1':
+        return 'password'
+    elif value == 'password2':
+        return 'confirm password'
+    else:
+        return value

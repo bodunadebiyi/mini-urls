@@ -1,0 +1,21 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+
+{% block title %}
+    {% block child_title %} {% endblock %}
+{% endblock %}
+
+{% block style %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/auth-form.css' %}" />
+{% endblock %}
+
+{% block base_content %}
+    <div class="form-wrapper">
+        <div class="form-container">
+            <div class="logo-container">
+                <img src="{% static 'img/logo-inverted.png' %}" alt="logo image" />
+            </div>
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+{% endblock %}

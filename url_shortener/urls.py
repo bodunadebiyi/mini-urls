@@ -16,13 +16,14 @@ Including another URLconf
 from django.contrib import admin
 from django.contrib.auth.views import LoginView, LogoutView
 from django.urls import path
-from .views import home, shorten_url, goto_dashboard
+from .views import home, shorten_url, goto_dashboard, register
 
 urlpatterns = [
     path('', home, name='home'),
     path('admin/', admin.site.urls),
     path('shorten_url', shorten_url, name='shorten_url'),
     path('dashboard', goto_dashboard, name='goto_dashboard'),
+    path('register', register, name='register'),
     path('login', 
         LoginView.as_view(template_name='url_shortener/login.html'), 
         name='login'),
