@@ -14,11 +14,19 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
+from django.contrib.auth.views import LoginView, LogoutView
 from django.urls import path
-from .views import home, shorten_url
+from .views import home, shorten_url, goto_dashboard
 
 urlpatterns = [
     path('', home, name='home'),
     path('admin/', admin.site.urls),
-    path('shorten_url', shorten_url, name='shorten_url')
+    path('shorten_url', shorten_url, name='shorten_url'),
+    path('dashboard', goto_dashboard, name='goto_dashboard'),
+    path('login', 
+        LoginView.as_view(template_name='url_shortener/login.html'), 
+        name='login'),
+    path('logout', 
+        LogoutView.as_view(), 
+        name='logout')
 ]

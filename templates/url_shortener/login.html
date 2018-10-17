@@ -1,0 +1,38 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+{% load url_shortener_tags %}
+
+{% block title %} login {% endblock %}
+{% block style %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/login-form.css' %}" />
+{% endblock %}
+
+{% block base_content %}
+    <div class="form-wrapper">
+        <div class="form-container">
+            <div class="logo-container">
+                <img src="{% static 'img/logo-inverted.png' %}" alt="logo image" />
+            </div>
+            <form action="" method="post">
+                {% csrf_token %}
+                <p>Please Enter your login details</p>
+                {% for field in form %}
+                <div class="form-group">
+                    <div class="input-group">
+                        <span class="input-group-addon">
+                            <i class="fa {{ field.html_name | form_icon }}"></i>
+                        </span>
+                        <input class="form-control" id="{{ field.id_for_label }}" maxlength="30" name="{{ field.html_name }}" type="{{ field.html_name | form_type }}" placeholder="{{ field.html_name}}"/> 
+                    </div>
+                    {{ field.errors }}
+                </div>
+                {% endfor %}
+                <button type="submit" class="btn btn-default btn-block">Login</button>
+            </form>
+            {% if form.errors %}
+                <p class="text-center text-danger margin-top">Your username and password does not match!</p>
+            {% endif %}
+            <div class="text-center form-footer">Don't have an account? <a href="">Sign up here</a>.</div>
+        </div>
+    </div>
+{% endblock %}
