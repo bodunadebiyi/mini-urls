@@ -7,6 +7,16 @@ div.form-wrapper {
     height: 100%;
 }
 
+div.form-wrapper p.back-link {
+    position: absolute;
+    top: 20px;
+    width: 100%;
+}
+
+div.form-wrapper p a {
+    color: black;
+}
+
 div.form-container {
     width: 40%;
     min-width: 250px;

@@ -11,6 +11,9 @@
 
 {% block base_content %}
     <div class="form-wrapper">
+        <p class="text-center back-link">
+            <a href="{% url 'home' %}"><i class="fa fa-home"></i> Back to Homepage</a>
+        </p>
         <div class="form-container">
             <div class="logo-container">
                 <img src="{% static 'img/logo-inverted.png' %}" alt="logo image" />

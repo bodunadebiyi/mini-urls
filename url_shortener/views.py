@@ -48,7 +48,7 @@ def redirect_to_original_url(request, slug):
         original_url_record = Urls.objects.get(shortened_url=slug)
         return redirect(original_url_record.original_url)
     except ObjectDoesNotExist:
-        messages.add_message(request, messages.ERROR, 'this is an invalid url')
+        messages.add_message(request, messages.ERROR, "{0} is not a valid shortened url".format(get_full_url(request, slug)))
         return redirect('home')
 
 def register(request):
@@ -73,8 +73,6 @@ def goto_dashboard(request):
     return render(request, 'url_shortener/dashboard.html')
 
 
-
-
 def url_is_valid(url):
     regex = re.compile(
         r'^(?:http|ftp)s?://' # http:// or https://
@@ -96,9 +94,14 @@ def get_shortened_url():
     else:
         return shortened_url.lower()
 
-def generate_success_message(request, url_code):
+def get_full_url(request, url_code):
     shortened_url = 'https://' if request.is_secure() else 'http://'
     shortened_url +=  request.get_host() + '/' + url_code
+
+    return shortened_url
+
+def generate_success_message(request, url_code):
+    shortened_url = get_full_url(request, url_code)
     success_message = 'Your Url is ready: '
     success_message += '<em><a href="{0}">{1}</a></em>'.format(shortened_url, shortened_url)
 
