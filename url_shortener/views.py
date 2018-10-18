@@ -43,6 +43,14 @@ def shorten_url(request):
 
             return redirect('home')
 
+def redirect_to_original_url(request, slug):
+    try:
+        original_url_record = Urls.objects.get(shortened_url=slug)
+        return redirect(original_url_record.original_url)
+    except ObjectDoesNotExist:
+        messages.add_message(request, messages.ERROR, 'this is an invalid url')
+        return redirect('home')
+
 def register(request):
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
@@ -51,10 +59,10 @@ def register(request):
             username = form.cleaned_data.get('username')
             password = form.cleaned_data.get('password1')
 
-            user = authenticate(username, password)
+            user = authenticate(username=username, password=password)
             login(request, user)
 
-            return redirect('dashboard')
+            return redirect('goto_dashboard')
     else:
         form = UserCreationForm()
 

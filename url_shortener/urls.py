@@ -16,7 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.contrib.auth.views import LoginView, LogoutView
 from django.urls import path
-from .views import home, shorten_url, goto_dashboard, register
+from .views import home, shorten_url, goto_dashboard, register, redirect_to_original_url
 
 urlpatterns = [
     path('', home, name='home'),
@@ -29,5 +29,6 @@ urlpatterns = [
         name='login'),
     path('logout', 
         LogoutView.as_view(), 
-        name='logout')
+        name='logout'),
+    path('<slug:slug>', redirect_to_original_url)
 ]
