@@ -25,7 +25,7 @@ urlpatterns = [
     path('dashboard', goto_dashboard, name='goto_dashboard'),
     path('register', register, name='register'),
     path('login', 
-        LoginView.as_view(template_name='url_shortener/login.html'), 
+        LoginView.as_view(template_name='url_shortener/login.html', redirect_authenticated_user=True), 
         name='login'),
     path('logout', 
         LogoutView.as_view(), 

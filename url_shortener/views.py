@@ -46,12 +46,19 @@ def shorten_url(request):
 def redirect_to_original_url(request, slug):
     try:
         original_url_record = Urls.objects.get(shortened_url=slug)
+        original_url_record.hits = original_url_record + 1
+        original_url_record.save()
+
+
         return redirect(original_url_record.original_url)
     except ObjectDoesNotExist:
         messages.add_message(request, messages.ERROR, "{0} is not a valid shortened url".format(get_full_url(request, slug)))
         return redirect('home')
 
 def register(request):
+    if request.user.is_authenticated:
+        return redirect('goto_dashboard')
+
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
         if form.is_valid():
@@ -89,6 +96,7 @@ def get_admin_user():
 
 def get_shortened_url():
     shortened_url = uuid.uuid4().hex[:5].upper()
+
     if Urls.objects.filter(shortened_url=shortened_url).exists():
         get_shortened_url()
     else:
