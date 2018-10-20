@@ -5,11 +5,5 @@
         <input class="subscribe" value="Shorten Url!" type="submit">
     </form>
 
-    {% if messages %}
-        {% for msg in messages %}
-            {% if msg.level == 50 %}
-                <div class="my-toast-success padding-around">{{ msg.message | safe }}</div>
-            {% endif %}
-        {% endfor %}
-    {% endif %}
+    {% include 'url_shortener/partials/success.html' with messages=messages %}
 </div>

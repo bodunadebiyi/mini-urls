@@ -1,0 +1,69 @@
+body {
+    background: #eee;
+    color: black;
+}
+
+body .container-fluid .auth-link,
+body .container-fluid .auth-link a {
+    color: black;
+}
+
+.container-body {
+    margin-top: 60px;
+}
+
+.form-section {
+    width: 100%;
+    min-width: 400px;
+    margin: 0 auto;
+}
+
+.form-section .custom-url {
+    margin-bottom: 10px;
+}
+
+.form-section a#custom-url-link {
+    color: lightskyblue;
+}
+
+.form-section .custom-input {
+    display: none;
+}
+
+.form-section .custom-input input {
+    width: 200px;
+    display: inline-block;
+}
+
+.form-section .custom-input span {
+    font-size: 20px;
+}
+
+.dashboard-header {
+    margin-bottom: 40px;
+}
+
+.dashboard-body {
+    margin-bottom: 40px;
+}
+
+.settings-section h4 {
+    margin-top: 0;
+    margin-bottom: 20px;
+}
+
+.settings-section button {
+    margin-bottom: 15px;
+}
+
+.container-body .card h3 {
+    margin-bottom: 10px;
+}
+
+.form-section input {
+    margin-bottom: 10px;
+}
+
+.container-body .url-list .card a {
+    color: lightskyblue;
+}

@@ -1,4 +1,6 @@
 {% load static %}
+{% load url_shortener_tags %}
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -27,6 +29,26 @@
   <script src="{% static 'contactform/contactform.js' %}"></script>
   <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
   {% block scripts %}{% endblock %}
+  {% if messages %}
+      {% for msg in messages %} 
+          {% if msg.level_tag == 'error' %}   
+          <script type="text/javascript">
+              try {
+                  $(document).ready(function() {
+                      Toastify({
+                          text: "{{msg.message | safe}}",
+                          duration: 9000,
+                          close: true,
+                          positionLeft: true,
+                          className: "my-toast-{{msg.level_tag | error_pipe}} text-dark",
+                      }).showToast();
+                  });
+              } catch (e) {
+                  console.log('Error Loading Toastify::', e);
+              }
+          </script>
+          {% endif %}
+      {% endfor %}
+  {% endif %}
 </body>
-
 </html>

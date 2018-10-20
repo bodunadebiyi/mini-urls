@@ -1,1 +1,60 @@
-<p>This is my dashboard page</p>
+{% extends 'layouts/base.html' %}
+{% load static %}
+
+{% block style %}
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}" />
+{% endblock %}
+{% block scripts %}
+    <script src="{% static 'js/dashboard.js' %}"></script>
+{% endblock %}
+
+{% block base_content %}
+    <div class="container-fluid">
+        <span class="auth-link">
+            <a href="{% url 'home' %}"><i class="fa fa-home"></i> Home</a> | 
+            <a href="{% url 'logout' %}"><i class="fa fa-sign-out"></i> Logout</a> 
+        </span>
+        <div class="row container-body">
+            <div class="col-md-9">
+                <div class="card dashboard-header">
+                    <h2>{{ greeting }} {{ user.username }} </h2>
+                </div>
+                <div class="card dashboard-body">
+                    <h3>Shorten Your URL</h3>
+                    <div class="form-section">
+                        <div class="form-group">
+                            {% include 'url_shortener/partials/dashboard_form.html' %}
+                        </div>
+                        {% include 'url_shortener/partials/success.html' with messages=messages %}
+                    </div>
+                </div>
+                <div class="card url-list">
+                    <h3>LIST OF SHORTENED URLS</h3>
+                    {% if not urls %}
+                        <p class="text-danger"><i class="fa fa-frown-o"></i> You have no shortened urls</p>
+                    {% else %}
+                        {% include 'url_shortener/partials/url_lists.html' %}
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card settings-section">
+                    <h4><i class="fa fa-cog"></i> Settings</h4>
+                    {% if not user.username == 'admin' %}
+                        <button class="btn-block btn btn-primary">
+                            <i class="fa fa-user"></i> Change Username
+                        </button>
+                    {% endif %}
+                    <button class="btn-block btn btn-primary">
+                        <i class="fa fa-key"></i> Change Password
+                    </button>
+                    {% if not user.username == 'admin' %}
+                        <button class="btn-block btn btn-danger">
+                            <i class="fa fa-trash"></i> Delete Account
+                        </button>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

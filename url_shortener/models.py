@@ -6,6 +6,7 @@ class Urls(models.Model):
     shortened_url = models.CharField(max_length=60)
     creator = models.ForeignKey(User, on_delete=models.CASCADE, related_name="created_urls")
     hits = models.IntegerField()
+    is_custom = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

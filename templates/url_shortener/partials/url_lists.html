@@ -1,0 +1,11 @@
+<div class="row">
+    {% for url in urls %}
+        <div class="col-md-6">
+            <div class="card">
+                <p class="truncate"><strong>Original URL: </strong> <a href="{{ url.original_url }}" target="_blank">{{ url.original_url }}</a></p>
+                <p class="truncate"><strong>Shortened URL: </strong> <a href="{{ full_url }}{{url.shortened_url }}" target="_blank">{{ full_url }}{{url.shortened_url }}</a></p>
+                <p><strong>Number of Hits: </strong> {{ url.hits }}</p>
+            </div>
+        </div>
+    {% endfor %}
+</div>

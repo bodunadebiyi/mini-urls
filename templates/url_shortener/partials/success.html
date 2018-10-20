@@ -1,0 +1,7 @@
+{% if messages %}
+    {% for msg in messages %}
+        {% if msg.level == 50 %}
+            <div class="my-toast-success padding-around">{{ msg.message | safe }}</div>
+        {% endif %}
+    {% endfor %}
+{% endif %}

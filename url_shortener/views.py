@@ -1,5 +1,3 @@
-import re
-import uuid 
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.core.exceptions import ObjectDoesNotExist
@@ -7,7 +5,9 @@ from django.contrib.auth.models import User
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
+from datetime import datetime
 from .models import Urls
+from .helpers import custom_url_is_valid, get_greeting, url_is_valid, get_admin_user, get_shortened_url, get_full_url, generate_success_message
 
 def home(request):
     return render(request, 'url_shortener/home.html')
@@ -20,35 +20,37 @@ def shorten_url(request):
             messages.add_message(request, messages.ERROR, '{0} is not a valid URL'.format(original_url))
             return redirect('home')
 
-        try:
-            already_shortened_url = Urls.objects.get(original_url=original_url)
-            success_message = generate_success_message(request, already_shortened_url.shortened_url)
-        except ObjectDoesNotExist:
-            model_payload = {}
-            model_payload['original_url'] = original_url
-            model_payload['shortened_url'] = get_shortened_url()
-            model_payload['hits'] = 0
+        success_message = process_url_to_shorten(request, original_url)
 
-            if request.user.is_authenticated:
-                model_payload['creator'] = request.user
-            else:
-                model_payload['creator'] = get_admin_user()
+        if success_message is not None:
+            messages.add_message(request, 50, success_message)
 
-            new_model_record = Urls(**model_payload)    
-            new_model_record.save()
-            success_message = generate_success_message(request, new_model_record.shortened_url)
-        finally:
-            if success_message is not None:
-                messages.add_message(request, 50, success_message)
+    return redirect('home')
 
-            return redirect('home')
+def process_url_to_shorten(request, original_url):
+    success_message = None
+    try:
+        already_shortened_url = Urls.objects.filter(original_url=original_url, is_custom=False).first()
+        success_message = generate_success_message(request, already_shortened_url.shortened_url)
+    except ObjectDoesNotExist:
+        model_payload = {}
+        model_payload['original_url'] = original_url
+        model_payload['shortened_url'] = get_shortened_url()
+        model_payload['hits'] = 0
+
+        model_payload['creator'] = request.user if request.user.is_authenticated else get_admin_user()
+
+        new_model_record = Urls(**model_payload)    
+        new_model_record.save()
+        success_message = generate_success_message(request, new_model_record.shortened_url)
+
+    return success_message
 
 def redirect_to_original_url(request, slug):
     try:
         original_url_record = Urls.objects.get(shortened_url=slug)
-        original_url_record.hits = original_url_record + 1
+        original_url_record.hits = original_url_record.hits + 1
         original_url_record.save()
-
 
         return redirect(original_url_record.original_url)
     except ObjectDoesNotExist:
@@ -65,7 +67,6 @@ def register(request):
             form.save()
             username = form.cleaned_data.get('username')
             password = form.cleaned_data.get('password1')
-
             user = authenticate(username=username, password=password)
             login(request, user)
 
@@ -75,42 +76,50 @@ def register(request):
 
     return render(request, 'url_shortener/register.html', { 'form': form })
 
+@login_required(login_url='login')
+def shorten_customized_url(request):
+    if not request.method == 'POST':
+        return redirect('home')
+
+    original_url = request.POST.get('original_url')
+    customized_url = request.POST.get('custom_url')
+
+    if not original_url or not url_is_valid(original_url):
+        messages.add_message(request, messages.ERROR, 'Your URL is invalid')
+        return redirect('goto_dashboard')
+
+    if not customized_url or not customized_url.strip():
+        success_message = process_url_to_shorten(request, original_url)
+        messages.add_message(request, 50, success_message)
+        return redirect('goto_dashboard')
+
+    custom_url_validity = custom_url_is_valid(customized_url)
+
+    if not custom_url_validity['passed']:
+        messages.add_message(request, messages.ERROR, custom_url_validity['err_message'])
+    else:
+        shortened_url = Urls(
+            original_url=original_url,
+            shortened_url=customized_url,
+            creator=request.user,
+            hits=0
+        )
+        shortened_url.save()
+        messages.add_message(request, 50, generate_success_message(request, customized_url))
+
+    return redirect('goto_dashboard')
+
 @login_required(login_url='login')       
 def goto_dashboard(request):
-    return render(request, 'url_shortener/dashboard.html')
+    greeting = get_greeting(datetime.now().hour)
+    urls = request.user.created_urls.all()
+    full_url = 'https://' if request.is_secure() else 'http://'
+    full_url += request.get_host() + '/'
+    view_context = {
+        'greeting': greeting,
+        'urls': urls,
+        'full_url': full_url
+    }
 
+    return render(request, 'url_shortener/dashboard.html', view_context)
 
-def url_is_valid(url):
-    regex = re.compile(
-        r'^(?:http|ftp)s?://' # http:// or https://
-        r'(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+(?:[A-Z]{2,6}\.?|[A-Z0-9-]{2,}\.?)|' #domain...
-        r'localhost|' #localhost...
-        r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})' # ...or ip
-        r'(?::\d+)?' # optional port
-        r'(?:/?|[/?]\S+)$', re.IGNORECASE)
-    
-    return re.match(regex, url) is not None
-
-def get_admin_user():
-    return User.objects.get(username='admin')
-
-def get_shortened_url():
-    shortened_url = uuid.uuid4().hex[:5].upper()
-
-    if Urls.objects.filter(shortened_url=shortened_url).exists():
-        get_shortened_url()
-    else:
-        return shortened_url.lower()
-
-def get_full_url(request, url_code):
-    shortened_url = 'https://' if request.is_secure() else 'http://'
-    shortened_url +=  request.get_host() + '/' + url_code
-
-    return shortened_url
-
-def generate_success_message(request, url_code):
-    shortened_url = get_full_url(request, url_code)
-    success_message = 'Your Url is ready: '
-    success_message += '<em><a href="{0}">{1}</a></em>'.format(shortened_url, shortened_url)
-
-    return success_message

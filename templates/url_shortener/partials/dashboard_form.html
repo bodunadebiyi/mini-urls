@@ -1,0 +1,12 @@
+<form action="{% url 'shorten_dashboard_url' %}" method="post">
+    {% csrf_token %}
+    <input class="form-control" name="original_url" placeholder="Enter your URL..." required />
+    <div class="custom-url">
+        <a href="#" id="custom-url-link">Use Custom URL</a>
+    </div>
+    <div class="custom-section custom-input"id="custom-url-input">
+        <span>{{ full_url }}</span>
+        <input class="form-control" name="custom_url" placeholder="Enter your custom URL" />
+    </div>
+    <button class="btn btn-success" type="submit">Shorten Your URL</button>
+</form>
