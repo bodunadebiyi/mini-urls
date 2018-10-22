@@ -30,10 +30,9 @@ def shorten_url(request):
 
 def process_url_to_shorten(request, original_url):
     success_message = None
-    try:
-        already_shortened_url = Urls.objects.filter(original_url=original_url, is_custom=False).first()
-        success_message = generate_success_message(request, already_shortened_url.shortened_url)
-    except ObjectDoesNotExist:
+    already_shortened_url = Urls.objects.filter(original_url=original_url, is_custom=False).first()
+    
+    if already_shortened_url is None:
         model_payload = {}
         model_payload['original_url'] = original_url
         model_payload['shortened_url'] = get_shortened_url()
@@ -44,6 +43,8 @@ def process_url_to_shorten(request, original_url):
         new_model_record = Urls(**model_payload)    
         new_model_record.save()
         success_message = generate_success_message(request, new_model_record.shortened_url)
+    else:
+        success_message = generate_success_message(request, already_shortened_url.shortened_url)
 
     return success_message
 
