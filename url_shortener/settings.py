@@ -28,7 +28,9 @@ SECRET_KEY = '-v=z2zycljhs70wi^jcn^+)dowiubg(&4l-oj+c76v_cot%pc*'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'url-lil.herokuapp.com'
+]
 
 
 # Application definition
@@ -91,7 +93,7 @@ else:
         'HOST': os.environ.get('DATABASE_HOST', ''),
         'PORT': os.environ.get('DATABASE_PORT', ''),
     } 
-    
+
 DATABASES = {
     'default': default_database
 }
