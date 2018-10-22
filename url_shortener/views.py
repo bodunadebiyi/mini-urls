@@ -49,6 +49,8 @@ def process_url_to_shorten(request, original_url):
 
 def redirect_to_original_url(request, slug):
     try:
+        if slug == 'admin':
+            return redirect('admin/')
         original_url_record = Urls.objects.get(shortened_url=slug)
         original_url_record.hits = original_url_record.hits + 1
         original_url_record.save()
