@@ -41,17 +41,22 @@
                 <div class="card settings-section">
                     <h4><i class="fa fa-cog"></i> Settings</h4>
                     {% if not user.username == 'admin' %}
-                        <button class="btn-block btn btn-primary">
+                        <a href="#" id="change-username-link">
                             <i class="fa fa-user"></i> Change Username
-                        </button>
+                        </a>
+                        {% include 'url_shortener/partials/username_form.html' %}
                     {% endif %}
-                    <button class="btn-block btn btn-primary">
+                    <a href="#" id="change-password-link">
                         <i class="fa fa-key"></i> Change Password
-                    </button>
+                    </a>
+                    {% include 'url_shortener/partials/password_form.html' %}
                     {% if not user.username == 'admin' %}
-                        <button class="btn-block btn btn-danger">
+                        <a href="#" id="delete-account-link">
                             <i class="fa fa-trash"></i> Delete Account
-                        </button>
+                        </a>
+                        <form id="delete-account-form" method="post" action="{% url 'delete_account' %}">
+                            {% csrf_token %}
+                        </form>
                     {% endif %}
                 </div>
             </div>

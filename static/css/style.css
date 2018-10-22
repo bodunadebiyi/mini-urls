@@ -9,6 +9,10 @@ a {
     color: white;
 }
 
+.toastify { 
+    z-index: 300;
+}
+
 .auth-link {
     position: fixed;
     right: 30px;
@@ -63,7 +67,7 @@ footer {
 body {
 	line-height: 1.2;
     height: 100%;
-    background: #ffffff url('../img/banner01.jpg') repeat-x center top;
+    background: black url('../img/banner01.jpg') repeat-x center top;
     background-size: cover;
 	font-family: 'Open Sans', sans-serif;
 }

@@ -14,7 +14,7 @@ body .container-fluid .auth-link a {
 
 .form-section {
     width: 100%;
-    min-width: 400px;
+    min-width: 200px;
     margin: 0 auto;
 }
 
@@ -23,7 +23,7 @@ body .container-fluid .auth-link a {
 }
 
 .form-section a#custom-url-link {
-    color: lightskyblue;
+    color: #4579BB;
 }
 
 .form-section .custom-input {
@@ -65,5 +65,20 @@ body .container-fluid .auth-link a {
 }
 
 .container-body .url-list .card a {
-    color: lightskyblue;
+    color: #4579BB;
+}
+
+.settings-section a {
+    color: #4579BB;
+    display: block;
+    margin-top: 20px;
+}
+
+.settings-section form input {
+    margin-bottom: 10px;
+}
+
+.settings-section form {
+    display: none;
+    margin-top: 10px;
 }

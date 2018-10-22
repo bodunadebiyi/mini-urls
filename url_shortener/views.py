@@ -1,13 +1,14 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.contrib.auth.models import User
-from django.contrib.auth import login, authenticate
+from django.contrib.auth import login, authenticate, logout
+from django.contrib.auth.password_validation import validate_password
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 from datetime import datetime
 from .models import Urls
-from .helpers import custom_url_is_valid, get_greeting, url_is_valid, get_admin_user, get_shortened_url, get_full_url, generate_success_message
+from .helpers import custom_url_is_valid, get_greeting, url_is_valid, get_admin_user, get_shortened_url, get_full_url, generate_success_message, username_is_valid
 
 def home(request):
     return render(request, 'url_shortener/home.html')
@@ -123,3 +124,50 @@ def goto_dashboard(request):
 
     return render(request, 'url_shortener/dashboard.html', view_context)
 
+@login_required(login_url='login')
+def update_username(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        username_validation = username_is_valid(username)
+
+        if username_validation['passed']:
+            request.user.username = username
+            request.user.save()
+            messages.add_message(request, messages.SUCCESS, 'username updated')
+        else:
+            messages.add_message(request, messages.ERROR, username_validation['err_message'])
+
+    return redirect('goto_dashboard')
+
+@login_required(login_url='login')
+def update_password(request):
+    if request.method == 'POST':
+        password = request.POST.get('password')
+        confirm_password = request.POST.get('confirm_password')
+
+        if not password == confirm_password:
+            messages.add_message(request, messages.ERROR, 'passwords do not match!')
+        else:
+            try:
+                validate_password(password, request.user)
+                messages.add_message(request, messages.SUCCESS, 'password updated!')
+                request.user.set_password(password)
+            except ValidationError as err:
+                for err_message in err.messages:
+                    messages.add_message(request, messages.ERROR, err_message)
+
+    return redirect('goto_dashboard')
+
+@login_required(login_url='login')
+def delete_account(request):
+    if request.method == 'POST':
+        user = request.user
+        logout(request)
+        try:
+            user.created_urls.all().delete()
+            user.delete()
+            messages.add_message(request, messages.SUCCESS, 'Account Successfully Delete!')
+        except Exception:
+            messages.add_message(request, messages.ERROR, 'Something went wrong!')
+            
+    return redirect('home')

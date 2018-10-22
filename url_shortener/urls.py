@@ -16,7 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.contrib.auth.views import LoginView, LogoutView
 from django.urls import path
-from .views import home, shorten_url, goto_dashboard, register, redirect_to_original_url, shorten_customized_url
+from .views import home, shorten_url, goto_dashboard, register, redirect_to_original_url, shorten_customized_url, update_username, update_password, delete_account
 
 urlpatterns = [
     path('', home, name='home'),
@@ -25,6 +25,9 @@ urlpatterns = [
     path('dashboard', goto_dashboard, name='goto_dashboard'),
     path('register', register, name='register'),
     path('shorten_customized_url', shorten_customized_url, name="shorten_dashboard_url"),
+    path('update_username', update_username, name='update_username'),
+    path('update_password', update_password, name='update_password'),
+    path('delete_account', delete_account, name='delete_account'),
     path('login', 
         LoginView.as_view(template_name='url_shortener/login.html', redirect_authenticated_user=True), 
         name='login'),

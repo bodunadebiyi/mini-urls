@@ -31,13 +31,13 @@
   {% block scripts %}{% endblock %}
   {% if messages %}
       {% for msg in messages %} 
-          {% if msg.level_tag == 'error' %}   
+          {% if msg.level_tag == 'error' or msg.level_tag == 'success' %}   
           <script type="text/javascript">
               try {
                   $(document).ready(function() {
                       Toastify({
                           text: "{{msg.message | safe}}",
-                          duration: 9000,
+                          duration: 29000,
                           close: true,
                           positionLeft: true,
                           className: "my-toast-{{msg.level_tag | error_pipe}} text-dark",

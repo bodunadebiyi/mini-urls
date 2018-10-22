@@ -61,3 +61,22 @@ def generate_success_message(request, url_code):
     success_message += '<em><a href="{0}" target="_blank">{1}</a></em>'.format(shortened_url, shortened_url)
 
     return success_message
+
+def username_is_valid(username):
+    result = {}
+    username = username.strip()
+    regex = re.compile(r'^[a-zA-Z0-9_]*$', re.IGNORECASE)
+
+    if not username.strip():
+        result['passed'] = False
+        result['err_message'] = 'Username cannot be blank'
+    elif User.objects.filter(username=username).count() > 0:
+        result['passed'] = False
+        result['err_message'] = 'Username is not available'
+    elif re.match(regex, username) is None:
+        result['passed'] = False
+        result['err_message'] = "Username is invalid, it can contain only numbers, letters and an underscore"
+    else:
+        result['passed'] = True
+
+    return result

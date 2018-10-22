@@ -1,0 +1,5 @@
+<form id="username-update-form" method="post" action="{% url 'update_username' %}">
+    {% csrf_token %}
+    <input class='form-control' type="text" name='username' placeholder="{{ user.username }}" required />
+    <button class="btn btn-success btn-block">Update Username</button>
+</form>
